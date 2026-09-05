@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/inngest",
-      "schedule": "* * * * *"
+      "schedule": "0 0 * * *"
     }
   ],
   "headers": [
