@@ -15,13 +15,13 @@
 
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
-import { ok, fromError, generateRequestId } from '../../../lib/api/response';
-import { getRequiredSession } from '../../../lib/auth/session';
-import { generateClientUploadUrl } from '../../../lib/storage/blob';
-import { checkRateLimit } from '../../../lib/security/rateLimit';
-import { ALL_ALLOWED_MIMES, MAX_FILE_SIZE_BYTES, sanitizeFilename, getMimeCategory } from '../../../lib/validation/serverMediaValidation';
-import { Errors } from '../../../lib/errors';
-import { logger, hashUserId } from '../../../lib/utils/logger';
+import { ok, fromError, generateRequestId } from '../../../../lib/api/response';
+import { getRequiredSession } from '../../../../lib/auth/session';
+import { generateClientUploadUrl } from '../../../../lib/storage/blob';
+import { checkRateLimit } from '../../../../lib/security/rateLimit';
+import { ALL_ALLOWED_MIMES, MAX_FILE_SIZE_BYTES, sanitizeFilename, getMimeCategory } from '../../../../lib/validation/serverMediaValidation';
+import { Errors } from '../../../../lib/errors';
+import { logger, hashUserId } from '../../../../lib/utils/logger';
 
 const RequestSchema = z.object({
   filename: z.string().min(1).max(500),

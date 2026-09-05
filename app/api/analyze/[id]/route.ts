@@ -16,10 +16,10 @@ import { BENCHMARK_CASES } from '../../../../src/mock/mockDatabase';
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const requestId = generateRequestId();
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const session = await getRequiredSession();

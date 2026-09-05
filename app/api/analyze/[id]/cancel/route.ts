@@ -12,10 +12,10 @@ import { Errors } from '../../../../../lib/errors';
 
 export async function POST(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const requestId = generateRequestId();
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const session = await getRequiredSession();

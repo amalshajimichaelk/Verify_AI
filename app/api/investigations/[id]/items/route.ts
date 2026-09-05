@@ -21,10 +21,10 @@ const AddItemSchema = z.object({
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const requestId = generateRequestId();
-  const { id: investigationId } = params;
+  const { id: investigationId } = await params;
 
   try {
     const session = await getRequiredSession();
@@ -96,13 +96,16 @@ export async function POST(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { id: string; itemId: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const requestId = generateRequestId();
-  const { id: investigationId, itemId } = params;
+  const { id: investigationId } = await params;
 
   try {
     const session = await getRequiredSession();
+    const body = await _req.json();
+    const { itemId } = body;
+    if (!itemId) throw Errors.invalidInput('itemId is required');
 
     if (!process.env.DATABASE_URL) {
       return ok({ deleted: true, isDemoMode: true }, requestId);
