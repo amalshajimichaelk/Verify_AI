@@ -1,0 +1,6 @@
+{
+  "name": "VerifyAI",
+  "description": "Production-grade multi-modal media verification platform with forensic evidence under glass, uncertainty calibration, and source provenance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
