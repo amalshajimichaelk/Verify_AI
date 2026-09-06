@@ -13,8 +13,16 @@
  * Partial failures are handled gracefully.
  */
 
-import type { AnalysisResult, DetectionSignal, MediaAsset, MetadataRecord, SourceMatch, TimelineEvent } from '../../../src/types';
-import type { MediaInput, ProviderResult } from './providers/interface';
+import type {
+  AnalysisResult,
+  DetectionSignal,
+  MediaAsset,
+  MediaType,
+  MetadataRecord,
+  SourceMatch,
+  TimelineEvent,
+} from '../../src/types';
+import type { DetectionProvider, MediaInput, ProviderResult, ProviderSignal } from './providers/interface';
 import { DemoProvider } from './providers/demo';
 import { GeminiProvider } from './providers/gemini';
 import { calculateCalibratedAssessment, toDetectionSignals } from './aggregation/engine';
@@ -35,8 +43,8 @@ export interface PipelineResult {
 /**
  * Selects the appropriate detection providers based on configuration.
  */
-function selectProviders(mediaType: string) {
-  const providers = [];
+function selectProviders(mediaType: MediaType): DetectionProvider[] {
+  const providers: DetectionProvider[] = [];
 
   if (isDemoMode()) {
     providers.push(new DemoProvider());
@@ -45,8 +53,10 @@ function selectProviders(mediaType: string) {
     if (process.env.GEMINI_API_KEY && (mediaType === 'image' || mediaType === 'url')) {
       providers.push(new GeminiProvider());
     }
-    // Always include demo as fallback to ensure coverage
-    providers.push(new DemoProvider());
+    // Only include demo as fallback if no real providers are configured
+    if (providers.length === 0) {
+      providers.push(new DemoProvider());
+    }
   }
 
   return providers;
@@ -96,7 +106,7 @@ export async function runAnalysisPipeline(input: PipelineInput): Promise<Pipelin
   const isDemoData = providerResults.every((r) => r.isDemoData);
 
   // Deduplicate signals by key (prefer higher confidence)
-  const signalMap = new Map<string, typeof allProviderSignals[0]>();
+  const signalMap = new Map<string, ProviderSignal>();
   for (const sig of allProviderSignals) {
     const existing = signalMap.get(sig.key);
     if (!existing || sig.confidence > existing.confidence) {

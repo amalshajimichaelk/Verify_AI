@@ -158,7 +158,7 @@ export const TestSuiteModal: React.FC<{ isOpen: boolean; onClose: () => void }> 
       status: 'PENDING',
       run: async () => {
         const sample = await analysisApi.getResult('case-4891');
-        const rep = await reportApi.generateReport(sample, 'Analyst Test', 'VerifyAI');
+        const rep = await reportApi.generateReport(sample, { name: 'Analyst Test', organization: 'VerifyAI' });
         const parsed = JSON.parse(rep.jsonLdExport);
         if (parsed['@type'] !== 'ClaimReview') throw new Error('Invalid JSON-LD ClaimReview type');
       },
@@ -169,7 +169,7 @@ export const TestSuiteModal: React.FC<{ isOpen: boolean; onClose: () => void }> 
       category: 'API',
       status: 'PENDING',
       run: async () => {
-        const inv = await investigationApi.createInvestigation('Test Board', 'Automated Verification Case');
+        const inv = await investigationApi.createInvestigation({ title: 'Test Board', description: 'Automated Verification Case' });
         const item = await investigationApi.addItem(inv.id, {
           title: 'Specular Corneal Anomaly Node',
           type: 'EVIDENCE',

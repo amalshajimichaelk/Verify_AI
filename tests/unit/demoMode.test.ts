@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { isDemoMode, hasGeminiKey, hasInngest, hasDatabase, hasBlobStorage, getServiceAvailability } from '../../../lib/demo/mode';
+import { isDemoMode, hasGeminiKey, hasInngest, hasDatabase, hasBlobStorage, getServiceAvailability } from '../../lib/demo/mode';
 
 describe('Demo Mode Utilities', () => {
   const originalEnv = process.env;

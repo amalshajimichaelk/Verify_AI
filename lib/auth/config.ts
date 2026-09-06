@@ -12,8 +12,6 @@
  */
 
 import NextAuth from 'next-auth';
-import Google from 'next-auth/providers/google';
-import Resend from 'next-auth/providers/resend';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { db } from '../db/client';
 import {
@@ -22,63 +20,16 @@ import {
   sessions,
   verificationTokens,
 } from '../db/schema';
+import { authConfig } from './auth.config';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: DrizzleAdapter(db, {
+  ...authConfig,
+  adapter: DrizzleAdapter(db as any, {
     usersTable: users,
     accountsTable: accounts,
     sessionsTable: sessions,
     verificationTokensTable: verificationTokens,
-  }),
-
-  providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      authorization: {
-        params: {
-          // Request minimal scopes
-          scope: 'openid email profile',
-        },
-      },
-    }),
-
-    // Email magic link — only if Resend is configured
-    ...(process.env.AUTH_RESEND_KEY
-      ? [
-          Resend({
-            apiKey: process.env.AUTH_RESEND_KEY,
-            from: process.env.AUTH_EMAIL_FROM || 'VerifyAI <noreply@verifyai.app>',
-          }),
-        ]
-      : []),
-  ],
-
-  session: {
-    strategy: 'database',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-
-  callbacks: {
-    /** Expose userId in the session object for API route access */
-    session: async ({ session, user }) => {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: user.id,
-        },
-      };
-    },
-  },
-
-  pages: {
-    signIn: '/auth/signin',
-    error: '/auth/error',
-  },
-
-  // Security: Trust the provided secret, not a fallback
-  secret: process.env.NEXTAUTH_SECRET,
+  } as any),
 });
 
 /** Extended session type with userId */

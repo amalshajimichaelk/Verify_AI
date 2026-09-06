@@ -64,7 +64,7 @@ export const AnalysisResultsView: React.FC<AnalysisResultsViewProps> = ({
   const handlePinAssetToInvestigation = async () => {
     try {
       const invs = await investigationApi.listInvestigations();
-      const targetInv = invs[0] || (await investigationApi.createInvestigation('Active Case Board', 'Default board'));
+      const targetInv = invs[0] || (await investigationApi.createInvestigation({ title: 'Active Case Board', description: 'Default board' }));
       await investigationApi.addItem(targetInv.id, {
         title: `Asset: ${result.asset.name}`,
         type: 'MEDIA',
@@ -83,12 +83,11 @@ export const AnalysisResultsView: React.FC<AnalysisResultsViewProps> = ({
   const handleCreateReport = async () => {
     setIsGeneratingReport(true);
     try {
-      const rep = await reportApi.generateReport(
-        result,
-        'Sarah Lin',
-        'Reuters FactCheck Lab',
-        analystNotes
-      );
+      const rep = await reportApi.generateReport(result, {
+        name: 'Sarah Lin',
+        organization: 'Reuters FactCheck Lab',
+        notes: analystNotes,
+      });
       setGeneratedReportId(rep.id);
       setIsReportModalOpen(false);
       if (onOpenReport) {

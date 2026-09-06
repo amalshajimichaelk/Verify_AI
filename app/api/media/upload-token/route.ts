@@ -66,11 +66,11 @@ export async function POST(req: NextRequest) {
       mediaType: category ?? 'unknown',
     });
 
-    const { uploadUrl, blobKey } = await generateClientUploadUrl(session.userId, normalizedMime);
+    const { clientToken, blobKey } = await generateClientUploadUrl(session.userId, normalizedMime);
 
     return ok(
       {
-        uploadUrl,
+        clientToken,
         blobKey,
         sanitizedName,
         mediaType: category,

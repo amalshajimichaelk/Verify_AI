@@ -15,7 +15,7 @@
 import { inngest } from './inngestClient';
 import { runAnalysisPipeline } from '../analysis/pipeline';
 import { logger } from '../utils/logger';
-import type { MediaAsset } from '../../src/types';
+import type { MediaAsset, AnalysisResult } from '../../src/types';
 
 export const analysisJobFunction = inngest.createFunction(
   {
@@ -26,16 +26,11 @@ export const analysisJobFunction = inngest.createFunction(
       limit: 10,
       period: '1m',
     },
+    triggers: [{ event: 'verifyai/media.analyze' }],
   },
-  { event: 'verifyai/media.analyze' },
 
-  async ({ event, step }) => {
-    const { jobId, mediaAssetId, userId, asset } = event.data as {
-      jobId: string;
-      mediaAssetId: string;
-      userId: string;
-      asset: MediaAsset;
-    };
+  async ({ event, step }: { event: { data: { jobId: string; mediaAssetId: string; userId: string; asset: MediaAsset } }; step: any }) => {
+    const { jobId, asset } = event.data;
 
     logger.info('[inngest] Starting analysis job', { jobId });
 
@@ -115,7 +110,7 @@ export const analysisJobFunction = inngest.createFunction(
         await import('../db/schema');
       const { eq } = await import('drizzle-orm');
 
-      const analysisResult = result.result!;
+      const analysisResult = result.result! as AnalysisResult;
 
       // Insert analysis result
       const [storedResult] = await db

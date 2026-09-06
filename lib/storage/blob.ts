@@ -82,22 +82,23 @@ export async function uploadToBlob(
 export async function generateClientUploadUrl(
   userId: string,
   mimeType: string
-): Promise<{ uploadUrl: string; blobKey: string }> {
+): Promise<{ clientToken: string; blobKey: string }> {
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     throw Errors.uploadFailed('Storage service is not configured.');
   }
 
   const blobKey = generateBlobKey(userId, mimeType);
 
-  // Use Vercel Blob's client upload — generates a tokenized URL
-  const { createUpload } = await import('@vercel/blob/client');
-  const { url: uploadUrl } = await createUpload(blobKey, {
-    access: 'private',
-    contentType: mimeType,
+  // Generate a short-lived client token for direct browser-to-Blob upload.
+  // The browser uses this token with `upload()` from '@vercel/blob/client'.
+  const { generateClientTokenFromReadWriteToken } = await import('@vercel/blob/client');
+  const clientToken = await generateClientTokenFromReadWriteToken({
+    pathname: blobKey,
+    allowedContentTypes: [mimeType],
     token: process.env.BLOB_READ_WRITE_TOKEN,
   });
 
-  return { uploadUrl, blobKey };
+  return { clientToken, blobKey };
 }
 
 /**

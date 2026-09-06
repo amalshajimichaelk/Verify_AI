@@ -3,7 +3,7 @@ import { ClassificationType } from '../../types';
 import { getClassificationConfig } from '../../services/forensicEngine';
 
 interface BadgeProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'warning' | 'error' | 'neutral' | 'classification';
   classification?: ClassificationType;
   dot?: boolean;
@@ -39,14 +39,16 @@ export const Badge: React.FC<BadgeProps> = ({
     warning: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
     error: 'bg-red-500/20 text-red-300 border-red-500/30',
     neutral: 'bg-white/5 text-[#a3a3a3] border-white/10',
+    classification: 'bg-white/5 text-[#a3a3a3] border-white/10',
   };
 
-  const dotStyles = {
+  const dotStyles: Record<string, string> = {
     primary: 'bg-orange-400',
     secondary: 'bg-emerald-400',
     warning: 'bg-amber-400',
     error: 'bg-red-400',
     neutral: 'bg-[#737373]',
+    classification: 'bg-[#737373]',
   };
 
   return (
