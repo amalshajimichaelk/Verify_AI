@@ -19,6 +19,8 @@
 
 Welcome to **VerifyAI**, a comprehensive full-stack forensic intelligence and media verification platform engineered to detect deepfakes, synthetic media, and digital manipulations. Built with Next.js 15, React 19, and Google Gemini AI, VerifyAI provides analysts, researchers, and journalists with deep multi-modal verification across images, video, audio, and documents—complete with calibrated confidence scoring, cryptographic hashing, and automated forensic report generation.
 
+🌐Live Website : https://verify-ai-seven.vercel.app/
+
 ---
 
 ## ✨ Key Features
